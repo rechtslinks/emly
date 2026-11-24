@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="lagune">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Emly – Trink-App</title>
+  <meta name="description" content="Emly – Trink- und Toiletten-Tagebuch. Läuft offline, alle Daten bleiben auf dem Handy.">
+  <meta name="theme-color" content="#0AA5C4">
+  <meta name="color-scheme" content="light">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Emly">
+  <meta name="application-name" content="Emly">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" sizes="180x180">
+  <link rel="stylesheet" href="css/app.css">
+  <script>
+    /* Theme vor dem ersten Paint setzen (kein Farbblitz) */
+    try { var t = localStorage.getItem('emly.theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+  </script>
+</head>
+<body>
+  <div id="app" class="e-app">
+    <main id="screen" class="e-main" tabindex="-1" aria-live="polite">
+      <div class="e-boot" aria-label="Emly lädt">
+        <svg class="e-boot__drop" viewBox="0 0 104 120" aria-hidden="true"><defs><linearGradient id="bootg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22B8D9"/><stop offset="1" stop-color="#3D7BF2"/></linearGradient></defs><path d="M52 4C68 24 92 46 92 72a40 40 0 0 1-80 0C12 46 36 24 52 4z" fill="url(#bootg)"/></svg>
+      </div>
+    </main>
+    <nav id="nav" class="e-nav" aria-label="Hauptnavigation"></nav>
+  </div>
+  <div id="layer-sheet" class="e-layer"></div>
+  <div id="layer-toast" class="e-toast-layer" aria-live="polite"></div>
+
+  <noscript>
+    <div style="padding:32px 24px;font-family:system-ui,sans-serif;text-align:center;color:#10233A">
+      <h1 style="font-size:24px">Emly braucht JavaScript</h1>
+      <p>Bitte JavaScript im Browser aktivieren (Chrome: Einstellungen → Website-Einstellungen → JavaScript) und die Seite neu laden.</p>
+    </div>
+  </noscript>
+
+  <script src="vendor/jspdf.umd.min.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/today.js"></script>
+  <script src="js/reports.js"></script>
+  <script src="js/pdf.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "Emly – Trink-App",
+  "short_name": "Emly",
+  "description": "Trink- & Toiletten-Tagebuch – offline, alle Daten bleiben auf dem Handy.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "de",
+  "dir": "ltr",
+  "theme_color": "#0AA5C4",
+  "background_color": "#EDF5FA",
+  "categories": ["health", "lifestyle"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" }
+  ]
+}
