@@ -5,7 +5,7 @@
 (function () {
   'use strict';
   const Emly = (window.Emly = window.Emly || {});
-  Emly.VERSION = '1.0.3';   // gleich halten mit CACHE in sw.js
+  Emly.VERSION = '1.0.4';   // gleich halten mit CACHE in sw.js
 
   /* ---------- Event-Bus ---------- */
   const listeners = {};

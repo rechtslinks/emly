@@ -367,7 +367,7 @@
     await new Promise(r => setTimeout(r, 0)); // UI (Lade-Hinweis) zuerst zeichnen lassen
     const p = Emly.stats.period(kind);
     const s = Emly.stats.summary(p.from, p.to);
-    const name = safe((Emly.store.getSettings() || {}).name || '') || '';
+    const name = safe((Emly.store.getSettings() || {}).name || 'Emily') || 'Emily';
     const doc = create(), d = mk(doc);
     header(d, p, s, name);
     if (s.isEmpty) {
@@ -416,7 +416,7 @@
       const blob = await build(kind);
       const name = fileName(kind);
       const p = Emly.stats.period(kind);
-      const nm = (Emly.store.getSettings() || {}).name || '';
+      const nm = (Emly.store.getSettings() || {}).name || 'Emily';
       const file = typeof File === 'function' ? new File([blob], name, { type: 'application/pdf' }) : null;
       const data = { files: [file], title: `Emly-Bericht ${Emly.stats.KIND_LABEL[p.kind] || ''}`.trim(), text: `Trink- & Toilettenprotokoll${nm ? ' von ' + nm : ''} (${p.label})` };
       const canShare = file && navigator.share && navigator.canShare && (() => { try { return navigator.canShare({ files: [file] }); } catch (e) { return false; } })();

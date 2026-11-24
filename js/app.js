@@ -127,7 +127,7 @@
   function onboarding() {
     return new Promise((resolve) => {
       const s = currentSettings();
-      const name = s.name || 'du';
+      const name = s.name || 'Emily';
       let theme = s.theme || 'lagune';
       const ui = Emly.ui;
       const wrap = document.createElement('div');

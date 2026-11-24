@@ -2,7 +2,7 @@
 
 Emly ist eine kleine Web-App (PWA) für das Handy: Getränke, Toilettengänge, Training und morgens kurz die Nacht davor eintragen – mit einem Tipp. Dazu gibt es XP, Level und Abzeichen fürs Trinken und Dranbleiben. Wochen-, Monats- und Gesamtberichte lassen sich als PDF erzeugen und z. B. per WhatsApp teilen.
 
-Version 1.0.3
+Version 1.0.4
 
 ## Datenschutz
 

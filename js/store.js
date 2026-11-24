@@ -44,7 +44,7 @@
     return {
       version: SCHEMA_VERSION,
       settings: {
-        name: '', theme: 'lagune',
+        name: 'Emily', theme: 'lagune',
         units: Object.assign({}, DEFAULT_UNITS),
         goalBase: 1200, goalTraining: 1700,
         dayStartHour: 4,

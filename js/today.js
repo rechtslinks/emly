@@ -719,7 +719,7 @@
     const t = st.dayTotals(key);
     root.classList.toggle('t-past', !isToday);
 
-    refs.hello.textContent = set.name ? 'Hey ' + set.name + '!' : 'Hey du!';
+    refs.hello.textContent = 'Hey ' + (set.name || 'Emily') + '!';
     refs.date.textContent = (isToday ? '' : 'Gestern · ') + dateLabel(key);
     refs.switchBtn.textContent = isToday ? '◀ Gestern' : 'Heute ▶';
     refs.switchBtn.setAttribute('aria-label', isToday ? 'Gestern nachtragen' : 'Zurück zu heute');

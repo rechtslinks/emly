@@ -220,7 +220,7 @@
         h('div', { class: 'e-row' }, h('span', { class: 'e-list__icon', html: ui().icon('info') }),
           h('div', { class: 'e-info-text' }, h('b', null, 'Richtwert: '), 'DGE (Deutsche Gesellschaft für Ernährung) für 10–13 Jahre: ca. 1.170 ml Getränke pro Tag. Die App-Ziele (1.200 ml, Training 1.700 ml) sind Annahmen und hier änderbar. Emly ersetzt keine ärztliche Beratung.')),
         h('hr', { class: 'e-divider' }),
-        h('div', { class: 'e-row e-row--between e-xs e-muted' }, h('span', null, 'Emly · Version ' + (Emly.VERSION || '1.0.0')), h('span', null, 'Gemacht mit ', h('span', { html: ui().icon('heart', { cls: 'e-ico--sm' }), style: { display: 'inline-block', verticalAlign: 'middle', color: 'var(--c-primary)' } }), ' für dich')))));
+        h('div', { class: 'e-row e-row--between e-xs e-muted' }, h('span', null, 'Emly · Version ' + (Emly.VERSION || '1.0.0')), h('span', null, 'Gemacht mit ', h('span', { html: ui().icon('heart', { cls: 'e-ico--sm' }), style: { display: 'inline-block', verticalAlign: 'middle', color: 'var(--c-primary)' } }), ' für Emily')))));
 
     el.append(scr);
   }
