@@ -203,6 +203,14 @@
 .t-chev{color:var(--t-muted);font-size:18px;line-height:1}
 .t-empty{padding:22px 18px;text-align:center;color:var(--t-muted);font-size:15px;line-height:1.45}
 .t-empty b{color:var(--t-text)}
+.t-item{position:relative}
+.t-item .t-row{padding-right:60px}
+.t-row .t-chev{display:none}
+.t-trash{position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:2;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border:0;border-radius:14px;background:transparent;color:var(--t-muted,#6b8793);cursor:pointer}
+.t-trash:active{background:var(--t-soft,#eef6f9);color:#c0392b}
+.t-tiles{margin-top:2px}
+.t-row2{margin-bottom:14px}
+@media (max-height:760px){.t-gauge-card{grid-template-columns:84px 1fr;padding:10px 14px}.t-gauge{width:84px;height:138px}.t-ml-num{font-size:40px}}
 .t-hint-swipe{margin:8px 4px 0;font-size:12px;color:var(--t-muted);text-align:center}
 /* Sheets */
 .t-sheet{color:var(--t-text)}
@@ -685,11 +693,13 @@
     refs.listTitle = h('h2', { class: 't-sec' });
     refs.sum = h('span', { class: 't-sum' });
     refs.list = h('ul', { class: 't-list' });
-    refs.swipeHint = h('p', { class: 't-hint-swipe' }, 'Tippen zum Ändern · nach links wischen zum Löschen');
+    refs.swipeHint = h('p', { class: 't-hint-swipe' }, 'Tippen zum Ändern · Papierkorb zum Löschen');
 
-    root.append(head, refs.banner, refs.card,
-      h('h2', { class: 't-sec' }, 'Trinken'), refs.tiles, refs.file,
+    // S21-Feedback: die Eintrage-Knöpfe gehören ganz nach oben (ohne Scrollen sichtbar), Füllstand darunter
+    root.append(head, refs.banner,
+      refs.tiles, refs.file,
       h('div', { class: 't-row2' }, toilet, refs.train),
+      refs.card,
       refs.night,
       h('div', { class: 't-list-head' }, refs.listTitle, refs.sum), refs.list, refs.swipeHint);
   }
@@ -806,6 +816,7 @@
     entries.slice().reverse().forEach(e => refs.list.append(itemRow(e)));
   }
 
+  const TRASH_SVG = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/></svg>';
   function itemRow(e) {
     const icon = h('span', { class: 't-ri' });
     if (e.type === 'toilet') icon.innerHTML = ui.icon('toilet', '🚽');
@@ -817,7 +828,9 @@
       h('span', { class: 't-time' }, U.fmtTime(e.ts)), icon, label,
       h('span', { class: 't-rml' }, e.type === 'drink' ? fmtNum(e.ml) + ' ml' : ''),
       h('span', { class: 't-chev', 'aria-hidden': 'true' }, '›'));
-    const li = h('li', { class: 't-item' }, h('div', { class: 't-del-bg', 'aria-hidden': 'true' }, 'Löschen'), row);
+    const trash = h('button', { type: 'button', class: 't-trash', 'aria-label': entryLabel(e) + ' um ' + U.fmtTime(e.ts) + ' löschen', html: TRASH_SVG });
+    trash.addEventListener('click', ev => { ev.stopPropagation(); deleteEntry(e.id); });
+    const li = h('li', { class: 't-item' }, h('div', { class: 't-del-bg', 'aria-hidden': 'true' }, 'Löschen'), row, trash);
     attachSwipe(row, e.id);
     return li;
   }
