@@ -4,7 +4,7 @@
  * Bei neuer Version: CACHE-Version erhöhen.
  */
 'use strict';
-const CACHE = 'emly-v1.0.4';   // gleich halten mit Emly.VERSION in js/core.js
+const CACHE = 'emly-v1.0.5';   // gleich halten mit Emly.VERSION in js/core.js
 const PRECACHE = [
   './',
   './index.html',

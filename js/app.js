@@ -239,6 +239,83 @@
     if (Emly.bus) Emly.bus.emit('app:installable', false);
   });
 
+
+  /* ---------- Installations-Assistent (nur im Browser, nie in der installierten App) ----------
+   * Ziel: alles über den Link auslösen. Chrome: ein Tipp → Systemdialog „App installieren“.
+   * Samsung Internet & Co.: ein Tipp öffnet dieselbe Seite in Chrome (intent://), dort weiter wie oben.
+   */
+  function installGate() {
+    return new Promise((resolve) => {
+      if (Emly.app.isStandalone()) return resolve();
+      try { if (sessionStorage.getItem('emly.browserOk') === '1') return resolve(); } catch (e) { /* egal */ }
+      const ua = navigator.userAgent || '';
+      const android = /Android/i.test(ua);
+      const samsung = /SamsungBrowser/i.test(ua);
+      const chrome = android && /Chrome\//.test(ua) && !/SamsungBrowser|EdgA|OPR|Firefox|YaBrowser|; wv\)/i.test(ua);
+      const intentUrl = 'intent://' + location.host + location.pathname + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(location.origin + location.pathname) + ';end';
+
+      if (!document.getElementById('install-gate-styles')) {
+        const st = document.createElement('style'); st.id = 'install-gate-styles';
+        st.textContent = `
+.ig{position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px 24px calc(24px + env(safe-area-inset-bottom));text-align:center;color:#fff;background:linear-gradient(160deg,#19c3d6 0%,#1a7fd8 60%,#3a5be0 100%);overflow:auto}
+.ig img{width:96px;height:96px;border-radius:26px;box-shadow:0 10px 28px rgba(0,0,0,.25)}
+.ig h1{font-size:26px;line-height:1.15;margin:4px 0 0}
+.ig p{font-size:16px;line-height:1.45;max-width:340px;margin:0;opacity:.96}
+.ig .ig-btn{display:block;width:100%;max-width:340px;min-height:60px;border:0;border-radius:30px;background:#fff;color:#0d5fa8;font-size:19px;font-weight:800;text-decoration:none;line-height:60px;box-shadow:0 8px 20px rgba(0,0,0,.18);cursor:pointer}
+.ig .ig-steps{background:rgba(255,255,255,.16);border-radius:18px;padding:14px 16px;max-width:340px;text-align:left;font-size:15px;line-height:1.5}
+.ig .ig-steps b{font-weight:800}
+.ig .ig-skip{background:none;border:0;color:#fff;opacity:.85;font-size:14px;text-decoration:underline;min-height:48px;cursor:pointer}
+.ig .ig-ok{font-size:54px;line-height:1}`;
+        document.head.append(st);
+      }
+      const wrap = document.createElement('div');
+      wrap.className = 'ig'; wrap.setAttribute('role', 'dialog'); wrap.setAttribute('aria-modal', 'true');
+      document.body.append(wrap);
+      const close = () => { wrap.remove(); off && off(); resolve(); };
+      let off = null;
+
+      const skipBtn = () => '<button type="button" class="ig-skip" data-skip>Erst mal im Browser ausprobieren</button>';
+      const bindSkip = () => { const b = wrap.querySelector('[data-skip]'); if (b) b.onclick = () => { try { sessionStorage.setItem('emly.browserOk', '1'); } catch (e) {} close(); }; };
+
+      function done() {
+        wrap.innerHTML = `<div class="ig-ok">🎉</div><h1>Geschafft!</h1>
+          <p>Emly ist jetzt auf deinem Startbildschirm – der <b>blaue Tropfen</b>.</p>
+          <p>Schließ den Browser und öffne Emly ab jetzt <b>nur noch über den Tropfen</b>.</p>`;
+      }
+      function showChrome() {
+        const can = Emly.app.canInstall();
+        wrap.innerHTML = `<img src="icons/icon-192.png" alt=""><h1>Hol dir Emly auf deinen Startbildschirm</h1>
+          ${can ? `<p>Nur ein Tipp – dann ist Emly eine richtige App mit eigenem Symbol.</p>
+            <button type="button" class="ig-btn" data-install>App installieren</button>`
+               : `<div class="ig-steps">1. Oben rechts auf <b>⋮</b> (drei Punkte) tippen<br>2. <b>„App installieren“</b> oder <b>„Zum Startbildschirm hinzufügen“</b> wählen<br>3. <b>„Installieren“</b> bestätigen</div>
+            <p style="font-size:14px">Schon installiert? Dann öffne Emly einfach über den blauen Tropfen.</p>`}
+          ${skipBtn()}`;
+        bindSkip();
+        const b = wrap.querySelector('[data-install]');
+        if (b) b.onclick = async () => { const ok = await Emly.app.promptInstall(); if (ok) done(); else showChrome(); };
+      }
+      function showOther() {
+        wrap.innerHTML = `<img src="icons/icon-192.png" alt=""><h1>Hol dir Emly auf deinen Startbildschirm</h1>
+          <p>Am sichersten klappt das mit <b>Chrome</b> (ist auf jedem Samsung-Handy drauf). Tipp auf den Knopf – Emly öffnet sich dort, dann noch einmal „App installieren“ tippen.</p>
+          <a class="ig-btn" href="${intentUrl}" data-chrome>In Chrome öffnen</a>
+          ${samsung ? `<div class="ig-steps" style="font-size:14px"><b>Oder hier im Samsung-Browser:</b><br>unten rechts <b>≡</b> → <b>„Seite hinzufügen zu“</b> → <b>„Startbildschirm“</b> → <b>„Hinzufügen“</b>. Danach in der <b>App-Übersicht</b> (vom Startbildschirm nach oben wischen) nach „Emly“ suchen.</div>` : ''}
+          ${skipBtn()}`;
+        bindSkip();
+      }
+
+      if (chrome) {
+        showChrome();
+        // beforeinstallprompt kann etwas später kommen → Ansicht aktualisieren
+        if (Emly.bus) off = Emly.bus.on('app:installable', (v) => { if (v) showChrome(); });
+        window.addEventListener('appinstalled', done, { once: true });
+      } else if (android) {
+        showOther();
+      } else {
+        resolve(); wrap.remove();   // Desktop/iPhone: keine Installationshilfe nötig
+      }
+    });
+  }
+
   /* ---------- Öffentliche App-API ---------- */
   Emly.app = {
     applyTheme,
@@ -320,6 +397,9 @@
 
     // 5) PWA früh registrieren (Review Jonas): sonst ist die App erst nach dem Onboarding offline-fähig
     registerSW();
+
+    // 5b) Installations-Assistent (nur im Browser auf Android)
+    if (hasUI()) { try { await installGate(); } catch (e) { console.error('[app] installGate', e); } }
 
     // 6) Onboarding
     if (storeReady && hasUI() && !currentSettings().onboarded) await onboarding();
